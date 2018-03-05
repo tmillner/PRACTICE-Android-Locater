@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">LocatrActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="search">Find a nearby image</string>
+    <string name="action_settings">Settings</string>
+</resources>
