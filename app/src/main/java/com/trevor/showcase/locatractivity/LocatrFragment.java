@@ -1,12 +1,17 @@
 package com.trevor.showcase.locatractivity;
 
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.location.Location;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -47,7 +52,7 @@ public class LocatrFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_locatr, container, false);
-        ImageView imageView = v.findViewById(R.id.image);
+        mImageView = v.findViewById(R.id.image);
 
         return v;
     }
@@ -85,7 +90,21 @@ public class LocatrFragment extends Fragment {
                 })
                 .build();
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M ) {
+            checkPermission();
+        }
 
+    }
+
+    public void checkPermission(){
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                ){//Can add more as per requirement
+
+            ActivityCompat.requestPermissions(getActivity(),
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},
+                    123);
+        }
     }
 
     @Override
@@ -118,7 +137,7 @@ public class LocatrFragment extends Fragment {
                     @Override
                     public void onLocationChanged(Location location) {
                         Log.i(TAG, "Got fix: " + location );
-                        new SearchTask().doInBackground(location);
+                        new SearchTask().execute(location);
                     }
                 });
     }
@@ -144,7 +163,6 @@ public class LocatrFragment extends Fragment {
                         " " + e);
                 e.printStackTrace();
             }
-
 
             return null;
         }
