@@ -33,7 +33,7 @@ public class FlickrFetcher {
             .appendQueryParameter("api_key", API_KEY)
             .appendQueryParameter("format", "json")
             .appendQueryParameter("nojsoncallback", "1")
-            .appendQueryParameter("extras", "url_s")
+            .appendQueryParameter("extras", "url_s,geo")
             .build();
 
     public byte[] getURLBytes(String urlSpec) throws IOException {
@@ -86,16 +86,6 @@ public class FlickrFetcher {
         return items;
     }
 
-    public List<GalleryItem> fetchRecentItems() {
-        String url =  buildUrl(RECENT_PHOTOS_METHOD, null);
-        return downloadGalleryItems(url);
-    }
-
-    public List<GalleryItem> searchPhotos(String query) {
-        String url = buildUrl(SEARCH_PHOTOS_METHOD, query);
-        return downloadGalleryItems(url);
-    }
-
     public List<GalleryItem> searchPhotos(Location location) {
         String url = buildUrl(location);
         return downloadGalleryItems(url);
@@ -109,17 +99,6 @@ public class FlickrFetcher {
                 .build().toString();
     }
 
-    private String buildUrl(String method, String query) {
-       Uri.Builder uriBuilder = ENDPOINT.buildUpon()
-               .appendQueryParameter("method", method);
-
-       if (method == SEARCH_PHOTOS_METHOD) {
-           uriBuilder.appendQueryParameter("text", query);
-       }
-
-       return uriBuilder.toString();
-    }
-
     public void parseRecentItems(List<GalleryItem> items, JSONObject jsonObject)
             throws JSONException{
         JSONObject photosObject = jsonObject.getJSONObject("photos");
@@ -131,6 +110,8 @@ public class FlickrFetcher {
             GalleryItem item = new GalleryItem();
             item.setId(photo.getString("id"));
             item.setCaption(photo.getString("title"));
+            item.setLat(photo.getDouble("latitude"));
+            item.setLong(photo.getDouble("longitude"));
 
             if(!photo.has("url_s")) {
                 continue;

@@ -9,6 +9,24 @@ public class GalleryItem {
     private String mCaption;
     private String mId;
     private String mUrl;
+    private Double mLat;
+    private Double mLong;
+
+    public Double getLat() {
+        return mLat;
+    }
+
+    public void setLat(Double lat) {
+        mLat = lat;
+    }
+
+    public Double getLong() {
+        return mLong;
+    }
+
+    public void setLong(Double lon) {
+        mLong = lon;
+    }
 
     public String getCaption() {
         return mCaption;
